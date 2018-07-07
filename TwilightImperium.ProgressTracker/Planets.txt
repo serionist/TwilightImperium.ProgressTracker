@@ -1,0 +1,10 @@
+﻿#The list of planets. Columns: Name, PlanetType, Technology, Influence, Resource, Description
+#The names of planets must be unique
+#PlanetType possibilities:  Cultural, Hazardous, Industrial
+#Technology possibilitiers:  Blue, Yellow, Red, Green
+#Example:
+#Lofasz,Cultural,Blue,15,110,Anyad
+Lofasz12,Cultural,Blue,15,110,Anyad
+Lofasz,Cultural,Blue,15,110,Anyad
+Lofasz4,Cultural,Blue,15,110,Anyad
+Lofasz5,Cultural,Blue,15,110,Anyad

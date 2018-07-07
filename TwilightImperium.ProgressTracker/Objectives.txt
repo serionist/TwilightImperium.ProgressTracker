@@ -1,0 +1,10 @@
+﻿#The list of objectives. Columns: Name, Stage, VictoryPoints, Description
+#The names of planets must be unique
+#Example:
+#Objective1,1,450,Anyad
+Objective1,1,450,Anyad
+Objective2,1,4250,Anyad
+Objective3,1,45220,Anyad
+Objective4,1,452220,Anyad
+Objective5,1,4522220,Anyad
+Objective8,1,422222250,Anyad

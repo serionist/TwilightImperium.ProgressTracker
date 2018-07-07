@@ -1,0 +1,189 @@
+﻿<Window x:Class="TwilightImperium.ProgressTracker.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TwilightImperium.ProgressTracker.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:controls="clr-namespace:TwilightImperium.ProgressTracker.Views.Controls"
+        mc:Ignorable="d"
+        Title="Twilight Imperium Tracker" Height="450" Width="800" MinHeight="450" MinWidth="600">
+    <Window.DataContext>
+        <local:MainVM/>
+    </Window.DataContext>
+    <Grid>
+        <!--WelcomeGrid-->
+        <Grid Visibility="{Binding CurrentGame,Converter={StaticResource ObjectIsNullToVisibility}}" d:IsHidden="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <materialDesign:ColorZone Mode="PrimaryDark" Grid.ColumnSpan="3" MinHeight="30">
+               <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}" HorizontalAlignment="Center">Twilight Imperium tracker</TextBlock>
+            </materialDesign:ColorZone>
+            
+            
+            <GroupBox Header="New Game" Margin="10" Grid.Row="1" >
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Top">
+                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource MaterialDesignBody2TextBlock}" Margin="5 0 0 0" Foreground="{StaticResource PrimaryHueDarkBrush}" Text="{Binding NumberOfPlayers}"></TextBlock>
+                        <Slider Minimum="2" Maximum="6" Value="{Binding NumberOfPlayers,Mode=TwoWay}" Style="{StaticResource MaterialDesignSlider}"></Slider>
+                       
+                    </DockPanel>
+                    
+                    <Button DockPanel.Dock="Bottom" IsEnabled="{Binding CanStartNewGame}" Command="{Binding NewGameCommand}">Start</Button>
+                    
+                    <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Usernames}" Margin="10">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBox Margin="5" materialDesign:HintAssist.Hint="User name" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DockPanel>
+            </GroupBox>
+
+        </Grid>
+
+        <!--GameGrid-->
+        <!--- -->
+        <Grid DataContext="{Binding CurrentGame}" Visibility="{Binding Converter={StaticResource ObjectIsNotNullToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+
+
+            <materialDesign:ColorZone Mode="PrimaryDark" Grid.ColumnSpan="3" MinHeight="30">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Margin="10">
+                        <Button  Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Background="{Binding ElementName=clockTxt, Path=Foreground}" Width="30" Height="30" Command="{Binding ToggleGameRunningCommand}">
+                            <Button.ToolTip>
+                                <Grid>
+                                    <TextBlock Visibility="{Binding IsGameRunning, Converter={StaticResource InverseBooleanToVisibility}}">Start clock</TextBlock>
+                                    <TextBlock Visibility="{Binding IsGameRunning, Converter={StaticResource BooleanToVisibility}}">Stop clock</TextBlock>
+                                </Grid>
+                            </Button.ToolTip>
+                            <Grid>
+                                <materialDesign:PackIcon Kind="Play"  Foreground="{StaticResource PrimaryHueDarkBrush}" Visibility="{Binding IsGameRunning, Converter={StaticResource InverseBooleanToVisibility}}"/>
+                                <materialDesign:PackIcon Kind="Pause"  Foreground="{StaticResource PrimaryHueDarkBrush}" Visibility="{Binding IsGameRunning, Converter={StaticResource BooleanToVisibility}}"/>
+                            </Grid>
+                        </Button>
+                        <TextBlock Margin="5 0 0 0" x:Name="clockTxt" Style="{StaticResource MaterialDesignTitleTextBlock}" VerticalAlignment="Center" Text="{Binding TimeElapsed,Converter={StaticResource TimespanConverter}}"/>
+                       
+                    </StackPanel>
+
+                    <Button  IsEnabled="{Binding IsGameRunning,Mode=OneWay}" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"  ToolTip="Reset planets" Background="{Binding ElementName=clockTxt, Path=Foreground}" Margin="10" HorizontalAlignment="Right" Width="30" Height="30" Command="{Binding ClearPlanetsCommand}">
+                        <materialDesign:PackIcon Kind="Autorenew"  Foreground="{StaticResource PrimaryHueDarkBrush}"/>
+                    </Button>
+                </Grid>
+            </materialDesign:ColorZone>
+            
+            <!--All users-->
+            <GroupBox Header="Users" Margin="10" Grid.Row="1" IsEnabled="{Binding IsGameRunning,Mode=OneWay}">
+                <ListBox ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser,Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Text="{Binding Name}"></TextBlock>
+                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}">
+                                    <Run>Resource:</Run>
+                                    <Run Text="{Binding ResourceString,Mode=OneWay}"></Run>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}">
+                                    <Run>Influence:</Run>
+                                    <Run Text="{Binding InfluenceString,Mode=OneWay}"></Run>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
+            
+            <!--Current User-->
+            <GroupBox Header="Selected user" Grid.Row="1" Grid.Column="1" Margin="10" DataContext="{Binding SelectedUser}" Visibility="{Binding Converter={StaticResource ObjectIsNotNullToVisibility}}"  IsEnabled="{Binding IsGameRunning,Mode=OneWay}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource MaterialDesignTitleTextBlock}" HorizontalAlignment="Center" Text="{Binding Name}" Foreground="{StaticResource PrimaryHueDarkBrush}"></TextBlock>
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource MaterialDesignBody2TextBlock}" Foreground="{StaticResource PrimaryHueMidBrush}" HorizontalAlignment="Center">
+                        <Run FontWeight="Bold" Text="Resource:"/>
+                        <Run  Text="{Binding ResourceString,Mode=OneWay}"/>
+                        <Run FontWeight="Bold" Text="Influence:"/>
+                        <Run Text="{Binding InfluenceString,Mode=OneWay}"/>
+                    </TextBlock>
+                    <DockPanel DockPanel.Dock="Top" Margin="10 10 10 0">
+                        <Button Margin="5 0"  DockPanel.Dock="Right" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Width="30" Height="30" ToolTip="Assign planets" Command="{Binding AssignPlanetCommand}">
+                            <materialDesign:PackIcon Kind="PlusCircleOutline" Height="20" Width="25"></materialDesign:PackIcon>
+                        </Button>
+                        <Button Margin="5 0"  DockPanel.Dock="Right" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Width="30" Height="30" ToolTip="Exhaust planets" Command="{Binding ExhaustSelectedPlanetsCommand}"
+                                IsEnabled="{Binding CanExhaustPlanet}" >
+                            <materialDesign:PackIcon Kind="EarthOff" Height="20" Width="25"></materialDesign:PackIcon>
+                        </Button>
+                        <Button Margin="5 0" DockPanel.Dock="Right" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Height="20" Width="20" ToolTip="Select all" VerticalAlignment="Bottom" Command="{Binding SelectAllPlanets}">
+                            <materialDesign:PackIcon Kind="CheckboxMultipleMarked"></materialDesign:PackIcon>
+                        </Button>
+                        <Button  DockPanel.Dock="Right" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Height="20" Width="20" ToolTip="Unselect all" VerticalAlignment="Bottom" Command="{Binding UnselectAllPlanets}">
+                            <materialDesign:PackIcon Kind="CheckboxMultipleBlankOutline"></materialDesign:PackIcon>
+                        </Button>
+
+                        <TextBox DockPanel.Dock="Left"  Style="{StaticResource MaterialDesignFloatingHintTextBox}"  VerticalAlignment="Center" materialDesign:HintAssist.Hint="Planet Search" Text="{Binding Planets.SearchString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    </DockPanel>
+
+
+                    <ScrollViewer DockPanel.Dock="Bottom" Margin="10" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Planets.FilteredItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <controls:PlanetListItem/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </GroupBox>
+
+            <!--Logs-->
+            <GroupBox Header="Logs" Margin="10" Grid.Column="2" Grid.Row="1">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding GameLog}">
+                       <ItemsControl.ItemTemplate>
+                           <DataTemplate>
+                               <Border BorderThickness="0 0 0 1" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}" Padding="5">
+                                   <Grid>
+                                       <Grid.ColumnDefinitions>
+                                           <ColumnDefinition Width="*"/>
+                                           <ColumnDefinition Width="Auto"/>
+                                       </Grid.ColumnDefinitions>
+                                       <Grid.RowDefinitions>
+                                           <RowDefinition Height="Auto"/>
+                                           <RowDefinition Height="Auto"/>
+                                       </Grid.RowDefinitions>
+                                       <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" TextWrapping="Wrap">
+                                           <Run Text="{Binding Gametime,Converter={StaticResource TimespanConverter},Mode=OneWay}"></Run>
+                                           <Run Text="{Binding Title,Mode=OneWay}"></Run>
+                                       </TextBlock>
+                                       <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Grid.Row="1" Text="{Binding Description}" TextWrapping="Wrap"/>
+                                       <Button Style="{StaticResource MaterialDesignFlatButton}" Grid.Column="1" Grid.RowSpan="2" Padding="0" ToolTip="Delete log" Foreground="Red" Command="{Binding DeleteLog}">
+                                           <materialDesign:PackIcon Kind="Delete"></materialDesign:PackIcon>
+                                       </Button>
+                                   </Grid>
+                               </Border>
+                            </DataTemplate>
+                       </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </GroupBox>
+
+        </Grid>
+    </Grid>
+</Window>
