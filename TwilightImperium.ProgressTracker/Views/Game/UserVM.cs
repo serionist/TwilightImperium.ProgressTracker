@@ -22,6 +22,10 @@ namespace TwilightImperium.ProgressTracker.Views.Game
             {
                 PropChanged(nameof(PlanetsCount), nameof(ResourceString), nameof(InfluenceString));
             };
+            Planets.PropertyChanged += (sender, args) =>
+            {
+                PropChanged(nameof(ResourceString), nameof(InfluenceString));
+            };
 
         }
 
@@ -30,12 +34,14 @@ namespace TwilightImperium.ProgressTracker.Views.Game
         public FilterableCollection<PlanetVM> Planets { get; }
         public int PlanetsCount => Planets.AllItems.Count;
 
-        public string ResourceString => $"{AllResource} ({RemainingResource})";
+        public string ResourceString => $"{AllResource} ({RemainingResource}) [{SelectedResource}]";
         public int AllResource => Planets.AllItems.Sum(e => e.Model.Resource);
         public int RemainingResource => Planets.AllItems.Where(e => !e.IsExhausted).Sum(e => e.Model.Resource);
-        public string InfluenceString => $"{AllInfluence} ({RemainingInfluence})";
+        public int SelectedResource => Planets.FilteredItems.Where(e => e.IsSelected).Sum(e => e.Model.Resource);
+        public string InfluenceString => $"{AllInfluence} ({RemainingInfluence}) [{SelectedInfluence}]";
         public int AllInfluence => Planets.AllItems.Sum(e => e.Model.Influence);
         public int RemainingInfluence => Planets.AllItems.Where(e => !e.IsExhausted).Sum(e => e.Model.Influence);
+        public int SelectedInfluence => Planets.FilteredItems.Where(e => e.IsSelected).Sum(e => e.Model.Influence);
 
         public bool CanExhaustPlanet => Planets.AllItems.Any(e => e.IsSelected && !e.IsExhausted);
 
@@ -56,5 +62,5 @@ namespace TwilightImperium.ProgressTracker.Views.Game
 
 
 
-    }
+}
 }

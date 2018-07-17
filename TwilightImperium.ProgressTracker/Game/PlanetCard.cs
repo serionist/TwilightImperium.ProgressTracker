@@ -10,15 +10,19 @@ namespace TwilightImperium.ProgressTracker.Game
     {
         Cultural,
         Hazardous,
-        Industrial
+        Industrial,
+        Homeplanet,
+        MecatolRex
     }
+
 
     public enum PlanetTechnology
     {
         Blue,
         Yellow,
         Red,
-        Green
+        Green,
+        None
     }
     public class PlanetCard
     {
