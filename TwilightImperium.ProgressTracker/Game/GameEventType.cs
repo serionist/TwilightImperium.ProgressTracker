@@ -15,7 +15,8 @@ namespace TwilightImperium.ProgressTracker.GameEvents
         SetObjective,
         AssignPlanets,
         RefreshPlanets,
-        ExhaustPlanets
+        ExhaustPlanets,
+        CompleteObjective
     }
 
     public class GameEvent

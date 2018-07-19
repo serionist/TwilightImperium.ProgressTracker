@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace TwilightImperium.ProgressTracker.Game.EventParameters
 {
@@ -11,8 +12,13 @@ namespace TwilightImperium.ProgressTracker.Game.EventParameters
         public PlanetCard[] PlanetCards { get; set; }
         public ObjectiveCard[] ObjectiveCards { get; set; }
 
-        public string[] UserNames { get; set; }
+        public GameStartUser[] Users { get; set; }
+        
+    }
 
-
+    public class GameStartUser
+    {
+        public string UserName { get; set; }
+        public Color Color { get; set; }
     }
 }

@@ -13,16 +13,16 @@ namespace TwilightImperium.ProgressTracker.Views.Controls
 {
     public class PlanetSelectorVM:ChildViewModel<Game.Game>
     {
-        public PlanetSelectorVM(Game.Game g, bool onlyBelongingToUsers, bool checkByDefault) : base(g)
+        public PlanetSelectorVM(Game.Game g, bool onlyBelongingToUsers, bool checkByDefault, List<PlanetVM> existingPlanets) : base(g)
         {
             Planets = new FilterableCollection<PlanetVM>(
                 new ObservableCollection<PlanetVM>(g.AllPlanetCards
-                    .Where(e => !onlyBelongingToUsers || g.Users.Any(us =>
+                    .Where(e => !existingPlanets.Exists(ex=>ex.Model.Name.Equals(e.Name)) && (!onlyBelongingToUsers || g.Users.Any(us =>
                                     us.Planets.AllItems.ToList().Exists(pl =>
-                                        pl.Model.Name.Equals(e.Name, StringComparison.CurrentCultureIgnoreCase))))
+                                        pl.Model.Name.Equals(e.Name, StringComparison.CurrentCultureIgnoreCase)))))
                     .Select(e =>
                     {
-                        var ret = new PlanetVM(null, e);
+                        var ret = new PlanetVM(null, e, false);
                         ret.PropertyChanged += (sender, args) =>
                         {
                             if (args.PropertyName == nameof(PlanetVM.IsSelected))

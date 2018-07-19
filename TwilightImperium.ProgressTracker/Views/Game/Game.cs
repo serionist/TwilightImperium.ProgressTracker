@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
 using TwilightImperium.ProgressTracker.Game;
 using TwilightImperium.ProgressTracker.Game.EventParameters;
 using TwilightImperium.ProgressTracker.GameEvents;
+using TwilightImperium.ProgressTracker.Views.Controls;
 
 namespace TwilightImperium.ProgressTracker.Views.Game
 {
-    public class Game:ViewModel, IDisposable
+    public class Game:ChildViewModel<MainVM>, IDisposable
     {
         private readonly List<GameEvent> _gameEvents = new List<GameEvent>();
         private GameEvent latestTimerEvent = null;
@@ -22,9 +26,11 @@ namespace TwilightImperium.ProgressTracker.Views.Game
         private UserVM[] _users;
         private UserVM _selectedUser;
 
-        public Game()
+        public Game(MainVM vm):base(vm)
         {
             startTimerLoop();
+            Objectives = new ObservableCollection<ObjectiveVM>();
+            Objectives.CollectionChanged += (sender, args) => PropChanged(nameof(CanGenerateObjective));
         }
         private void startTimerLoop()
         {
@@ -95,6 +101,27 @@ namespace TwilightImperium.ProgressTracker.Views.Game
             }
         }
 
+        public ObservableCollection<ObjectiveVM> Objectives { get; }
+
+        public bool CanGenerateObjective => Objectives.Count < 10;
+        private readonly Random rnd = new Random();
+        public ICommand GenerateObjective
+        {
+            get
+            {
+                return new DelegateCommand(() =>
+                {
+                    var possibilities = AllObjectiveCards.Where(card =>
+                            Objectives.All(e => e.Model.Name != card.Name) &&
+                            card.Stage == (Objectives.Count < 5 ? 1 : 2))
+                        .ToList();
+                    if (possibilities.Count == 0)
+                        return;
+                    Controller.I.SetObjective(this, possibilities[rnd.Next(0, possibilities.Count)].Name);
+                });
+            }
+        }
+
 
         public void UpdateWithLogs(params GameEvent[] events)
         {
@@ -109,10 +136,10 @@ namespace TwilightImperium.ProgressTracker.Views.Game
                     {
                         if (latestTimerEvent == null || latestTimerEvent.Timestamp < ev.Timestamp)
                             latestTimerEvent = ev;
-                            var p = ev.Parameters.ToObject<GameStartParameter>();
+                        var p = ev.Parameters.ToObject<GameStartParameter>();
                         AllObjectiveCards = p.ObjectiveCards;
                         AllPlanetCards = p.PlanetCards;
-                        Users = p.UserNames.Select(e => new UserVM(this, e)).ToArray();
+                        Users = p.Users.Select(e => new UserVM(this, e.UserName, e.Color)).ToArray();
                         eventVM.Title = "Game started";
                         eventVM.Description = $"Users: {Users.Length}";
                         IsGameRunning = false;
@@ -134,6 +161,9 @@ namespace TwilightImperium.ProgressTracker.Views.Game
                         eventVM.Description = "Timer stopped";
                         break;
                     case GameEventType.SetObjective:
+                        Objectives.Add(new ObjectiveVM(this, AllObjectiveCards.First(e=>e.Name==ev.Parameters.ToObject<string>())));
+                        eventVM.Title = "Objective generated";
+                        eventVM.Description = ev.Parameters.ToObject<string>();
                         break;
                     case GameEventType.AssignPlanets:
                     {
@@ -153,7 +183,7 @@ namespace TwilightImperium.ProgressTracker.Views.Game
                             }
                             if (targetUser.Planets.AllItems.FirstOrDefault(e =>
                                 e.Model.Name.Equals(planet.Name, StringComparison.CurrentCultureIgnoreCase)) == null)
-                                targetUser.Planets.AllItems.Add(new PlanetVM(targetUser, planet));
+                                targetUser.Planets.AllItems.Add(new PlanetVM(targetUser, planet, true));
                         }
 
                         eventVM.Title = $"Planets assigned to {p.TargetUser}";
@@ -183,6 +213,22 @@ namespace TwilightImperium.ProgressTracker.Views.Game
                         eventVM.Description = $"Planets: {string.Join(",", planetNames)}";
                         }
                         break;
+                    case GameEventType.CompleteObjective:
+                    {
+                        var p = ev.Parameters.ToObject<CompleteObjectiveParameter>();
+                        var targetUser = Users.First(e => e.Name.Equals(p.UserName));
+                        foreach (var o in p.Objectives)
+                            targetUser.FinishedObjectives.Add(new ObjectiveVM(this, AllObjectiveCards.First(e => e.Name == o)));
+                        foreach (var o in Objectives)
+                            if (p.Objectives.Contains(o.Model.Name))
+                                o.PropChanged(nameof(ObjectiveVM.CompletedBy));
+                        foreach (var u in Users)
+                            foreach (var o in u.FinishedObjectives)
+                                o.PropChanged(nameof(ObjectiveVM.CompletedBy));
+                        eventVM.Title = $"Objectives complete for user: {targetUser.Name}";
+                        eventVM.Description = $"Objectives: {string.Join(",", p.Objectives)}";
+                    }
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                         break;
@@ -201,6 +247,7 @@ namespace TwilightImperium.ProgressTracker.Views.Game
             var events = _gameEvents.ToArray();
             _gameEvents.Clear();
             GameLog.Clear();
+            Objectives.Clear();
             latestTimerEvent = null;
             UpdateWithLogs(events);
             SelectedUser = selectedUserName != null ? Users.FirstOrDefault(e => e.Name == selectedUserName) : null;
@@ -208,6 +255,45 @@ namespace TwilightImperium.ProgressTracker.Views.Game
         public void Dispose()
         {
             _timerCancelToken.Cancel();
+        }
+
+
+        public ICommand SaveCommand
+        {
+            get
+            {
+                return new DelegateCommand(() =>
+                {
+                    var ofd = new SaveFileDialog();
+                    var startDir = Properties.Settings.Default.LastSaveDir;
+                    if (string.IsNullOrEmpty(startDir))
+                        startDir = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+                    ofd.InitialDirectory = startDir;
+                    ofd.Filter = $"Twilight Progress files|*.{Controller.I.SaveFileExt}|All files|*";
+                    ofd.DefaultExt = Controller.I.SaveFileExt;
+                    ofd.OverwritePrompt = false;
+                    
+                    if (ofd.ShowDialog() != true)
+                        return;
+                    Properties.Settings.Default.LastSaveDir = Path.GetDirectoryName(ofd.FileName);
+                    Properties.Settings.Default.Save();
+                    Controller.I.SaveGame(ofd.FileName, _gameEvents);
+                });
+            }
+        }
+
+        public ICommand ExitCommand
+        {
+            get
+            {
+                return new DelegateCommand(() =>
+                {
+                    if (MessageBox.Show("Are you sure you want to exit?", "Exit confirmation",
+                            MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        return;
+                    Parent.CurrentGame = null;
+                });
+            }
         }
     }
 }

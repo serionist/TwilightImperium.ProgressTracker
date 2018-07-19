@@ -12,9 +12,10 @@ namespace TwilightImperium.ProgressTracker.Views.Game
         private bool _isExhausted;
         private bool _isSelected;
         public PlanetCard Model { get; }
-        public PlanetVM(UserVM parent, PlanetCard model) : base(parent)
+        public PlanetVM(UserVM parent, PlanetCard model, bool exhausted) : base(parent)
         {
             Model = model;
+            _isExhausted = exhausted;
         }
 
         public bool IsExhausted

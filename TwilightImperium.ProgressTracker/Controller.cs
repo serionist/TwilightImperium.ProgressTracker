@@ -5,17 +5,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TwilightImperium.ProgressTracker.Game;
 using TwilightImperium.ProgressTracker.Game.EventParameters;
 using TwilightImperium.ProgressTracker.GameEvents;
 using TwilightImperium.ProgressTracker.Views;
 using TwilightImperium.ProgressTracker.Views.Controls;
+using TwilightImperium.ProgressTracker.Views.Game;
 
 namespace TwilightImperium.ProgressTracker
 {
     public sealed class Controller
     {
+        public readonly Color[] Colors = new[]
+        {
+            System.Windows.Media.Colors.Blue, System.Windows.Media.Colors.Purple, System.Windows.Media.Colors.Yellow,
+            System.Windows.Media.Colors.Black, System.Windows.Media.Colors.Red, System.Windows.Media.Colors.Green
+        };
+
+        public readonly string AutoSaveDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TwitilightImperium.ProgressTracker",
+            "AutoSaves");
+
+        public readonly string SaveFileExt = "twilightProgress";
         private static Controller _c = null;
         public static Controller I => (_c ?? (_c = new Controller()));
         private Controller() { }
@@ -26,7 +40,7 @@ namespace TwilightImperium.ProgressTracker
         {
             if (!getPlanetCards()) Environment.Exit(1);
             if (!getObjectiveCards()) Environment.Exit(1);
-
+            Directory.CreateDirectory(AutoSaveDirectory);
             new MainWindow().ShowDialog();
         }
 
@@ -118,9 +132,9 @@ namespace TwilightImperium.ProgressTracker
         }
 
 
-        public Views.Game.Game NewGame(string[] userNames)
+        public Views.Game.Game NewGame(MainVM vm, string[] userNames)
         {
-            var ret = new Views.Game.Game();
+            var ret = new Views.Game.Game(vm);
             var ev = new GameEvent()
             {
                 Type = GameEventType.GameStart,
@@ -130,7 +144,7 @@ namespace TwilightImperium.ProgressTracker
                 {
                     PlanetCards = PlanetCards,
                     ObjectiveCards = ObjectiveCards,
-                    UserNames = userNames
+                    Users = vm.Usernames.Select(e=>new GameStartUser(){ Color = e.Color.Color, UserName = e.UserName}).ToArray()
                 })
             };
             ret.UpdateWithLogs(ev);
@@ -150,7 +164,7 @@ namespace TwilightImperium.ProgressTracker
 
         public void AssignPlanets(Views.Game.Game g)
         {
-            var window = new PlanetSelectorWindow(new PlanetSelectorVM(g, false, false));
+            var window = new PlanetSelectorWindow(new PlanetSelectorVM(g, false, false, g.SelectedUser.Planets.AllItems.ToList()));
             window.ShowDialog();
             if (window.ReturnCards == null)
                 return;
@@ -180,10 +194,31 @@ namespace TwilightImperium.ProgressTracker
             g.UpdateWithLogs(ev);
         }
 
+        public void AssignObjectives(Views.Game.Game g)
+        {
+            var window = new ObjectiveSelectorWindow(new ObjectiveSelectorVM(g, g.SelectedUser.FinishedObjectives.ToList(), g.Objectives.ToList()));
+            window.ShowDialog();
+            if (window.ReturnCards == null)
+                return;
+           
+            var ev = new GameEvent()
+            {
+                Type = GameEventType.CompleteObjective,
+                Timestamp = DateTime.UtcNow,
+                Gametime = g.TimeElapsed,
+                Parameters = JToken.FromObject(new CompleteObjectiveParameter()
+                {
+                    UserName = g.SelectedUser.Name,
+                    Objectives = window.ReturnCards.Select(e => e.Name).ToArray()
+
+                })
+            };
+            g.UpdateWithLogs(ev);
+        }
         public void RefreshPlanets(Views.Game.Game g)
         {
 
-            var window = new PlanetSelectorWindow(new PlanetSelectorVM(g, true, true));
+            var window = new PlanetSelectorWindow(new PlanetSelectorVM(g, true, true, new List<PlanetVM>()));
             window.ShowDialog();
             if (window.ReturnCards?.Any() != true)
                 return;
@@ -211,6 +246,38 @@ namespace TwilightImperium.ProgressTracker
                 Parameters = JToken.FromObject(models.Select(e=>e.Model.Name))
             };
             g.UpdateWithLogs(ev);
+        }
+
+        public void SetObjective(Views.Game.Game g, string objectiveName)
+        {
+            var ev = new GameEvent()
+            {
+                Type = GameEventType.SetObjective,
+                Timestamp = DateTime.UtcNow,
+                Gametime = g.TimeElapsed,
+                Parameters = JToken.FromObject(objectiveName)
+            };
+            g.UpdateWithLogs(ev);
+        }
+
+
+        public void SaveGame(string fileName, List<GameEvent> events)
+        {
+            try
+            {
+                File.WriteAllText(fileName, JsonConvert.SerializeObject(events, Formatting.Indented));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Save failed:\r\n{ex}");
+            }
+        }
+
+        public Views.Game.Game LoadGame(MainVM vm, string fileName)
+        {
+                var ret = new Views.Game.Game(vm);
+                ret.UpdateWithLogs(JsonConvert.DeserializeObject<GameEvent[]>(File.ReadAllText(fileName)));
+                return ret;
         }
     }
 }

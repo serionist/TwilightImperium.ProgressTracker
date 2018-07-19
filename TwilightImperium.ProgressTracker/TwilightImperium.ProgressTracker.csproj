@@ -146,21 +146,30 @@
     <Compile Include="Common\ValidationRules\UrlValidationRule.cs" />
     <Compile Include="Common\ViewModel.cs" />
     <Compile Include="Game\EventParameters\AssignPlanetsParameter.cs" />
+    <Compile Include="Game\EventParameters\CompleteObjectiveParameter.cs" />
     <Compile Include="Game\EventParameters\GameStartParameter.cs" />
     <Compile Include="Game\GameEventType.cs" />
     <Compile Include="Game\ObjectiveCard.cs" />
     <Compile Include="Game\PlanetCard.cs" />
+    <Compile Include="Views\Controls\ObjectiveItem.xaml.cs">
+      <DependentUpon>ObjectiveItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\PlanetListItem.xaml.cs">
       <DependentUpon>PlanetListItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PlanetSelectorVM.cs" />
+    <Compile Include="Views\ObjectiveSelectorVM.cs" />
+    <Compile Include="Views\PlanetSelectorVM.cs" />
     <Compile Include="Views\Game\Game.cs" />
     <Compile Include="Views\Game\GameEventVM.cs" />
+    <Compile Include="Views\Game\ObjectiveVM.cs" />
     <Compile Include="Views\Game\PlanetVM.cs" />
     <Compile Include="Views\Game\UserVM.cs" />
     <Compile Include="Views\MainVM.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ObjectiveSelectorWindow.xaml.cs">
+      <DependentUpon>ObjectiveSelectorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlanetSelectorWindow.xaml.cs">
       <DependentUpon>PlanetSelectorWindow.xaml</DependentUpon>
@@ -195,11 +204,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Controls\ObjectiveItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Controls\PlanetListItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ObjectiveSelectorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

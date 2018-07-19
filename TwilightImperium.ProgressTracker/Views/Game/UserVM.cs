@@ -6,15 +6,18 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 using TwilightImperium.ProgressTracker.Common;
+using TwilightImperium.ProgressTracker.Game;
 
 namespace TwilightImperium.ProgressTracker.Views.Game
 {
     public class UserVM:ChildViewModel<Game>
     {
-        public UserVM(Game parent, string name) : base(parent)
+        public UserVM(Game parent, string name, Color Color) : base(parent)
         {
             Name = name;
+            this.Color = new SolidColorBrush(Color);
             Planets = new FilterableCollection<PlanetVM>(new ObservableCollection<PlanetVM>(),
                 (vm, s) => vm.Model.Name.Trim().Replace(" ", "").StartsWith(s.Trim().Replace(" ", ""),
                     StringComparison.CurrentCultureIgnoreCase), new PlanetVMComparer());
@@ -30,8 +33,12 @@ namespace TwilightImperium.ProgressTracker.Views.Game
         }
 
         public string Name { get;  }
+        public SolidColorBrush Color { get; }
 
         public FilterableCollection<PlanetVM> Planets { get; }
+
+        public ObservableCollection<ObjectiveVM> FinishedObjectives { get; } = new ObservableCollection<ObjectiveVM>();
+
         public int PlanetsCount => Planets.AllItems.Count;
 
         public string ResourceString => $"{AllResource} ({RemainingResource}) [{SelectedResource}]";
@@ -60,7 +67,8 @@ namespace TwilightImperium.ProgressTracker.Views.Game
                 p.IsSelected = false;
         });
 
+        public ICommand AssignObjectives => new DelegateCommand(() => Controller.I.AssignObjectives(this.Parent));
 
 
-}
+    }
 }
