@@ -35,7 +35,7 @@ namespace TwilightImperium.ProgressTracker.Views.Game
             {
                 _isSelected = value;
                 ThisPropChanged();
-                Parent?.PropChanged(nameof(UserVM.CanExhaustPlanet));
+                Parent?.PropChanged(nameof(UserVM.CanExhaustPlanet), nameof(UserVM.ResourceString),nameof(UserVM.InfluenceString));
             }
         }
     }

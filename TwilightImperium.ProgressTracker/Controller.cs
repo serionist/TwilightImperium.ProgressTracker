@@ -163,7 +163,7 @@ namespace TwilightImperium.ProgressTracker
                         string.Join("\r\n",
                             existingOccupations.Select(e =>
                                 $"{e.Name} belongs to {g.Users.First(u => u.Planets.AllItems.Any(p => p.Model.Name.Equals(e.Name, StringComparison.InvariantCultureIgnoreCase))).Name}")) + "\r\nAre you sure to continue?",
-                        "The following planets are already occupied.", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                        "The following planets are already occupied.", MessageBoxButton.YesNo) == MessageBoxResult.No)                    
                     return;
             var ev = new GameEvent()
             {
@@ -174,6 +174,7 @@ namespace TwilightImperium.ProgressTracker
                 {
                     TargetUser = g.SelectedUser.Name,
                     TargetPlanets = window.ReturnCards.Select(e=>e.Name).ToArray()
+                    
                 })
             };
             g.UpdateWithLogs(ev);
