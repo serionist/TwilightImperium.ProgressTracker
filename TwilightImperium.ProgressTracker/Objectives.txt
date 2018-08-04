@@ -8,7 +8,7 @@ SWAY THE COUNCIL,1,1,Spend 8 influance.
 FOUND RESEARCH OUTPOSTS,1,1, Control 3 planets that have technology specialties.
 NEGOTIATE TRADE ROUTES,1,1,Spend 5 trade goods.
 INTIMIDATE COUNCIL,1,1,Have 1 or more ships in 2 systems that are adjacent to Mecatol Rex's system.
-EXPAND BORDERS,1,1Control 6 planets in non-home systems.
+EXPAND BORDERS,1,1,Control 6 planets in non-home systems.
 DIVERSIFY RESEARCH,1,1,Own 2 technologies in each of 2 colors.
 CORNER THE MARKET,1,1,Control 4 planets that each have the same planet trait.
 DEVELOP WEAPONRY,1,1,Own 2 unit upgrade technologies.
