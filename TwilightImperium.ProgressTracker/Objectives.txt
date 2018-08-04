@@ -3,13 +3,44 @@
 #Stage must be 0 for secret objectives
 #Example:
 #Objective1,1,450,Anyad
-Objective1,1,450,Anyad
-Objective2,1,4250,Anyad
-Objective3,1,45220,Anyad
-Objective4,1,452220,Anyad
-Objective5,1,4522220,Anyad
-Objective8,1,422222250,Anyad
-Objecve8,2,422222250,Anyad
-Objectie8,2,422222250,Anyad
-Objec123tive8,2,422222250,Anyad
-Objectiv111e8,2,422222250,Anyad
+ERECT A MONUMENT,1,1,Spend 8 resources.
+SWAY THE COUNCIL,1,1,Spend 8 influance.
+FOUND RESEARCH OUTPOSTS,1,1, Control 3 planets that have technology specialties.
+NEGOTIATE TRADE ROUTES,1,1,Spend 5 trade goods.
+INTIMIDATE COUNCIL,1,1,Have 1 or more ships in 2 systems that are adjacent to Mecatol Rex's system.
+EXPAND BORDERS,1,1Control 6 planets in non-home systems.
+DIVERSIFY RESEARCH,1,1,Own 2 technologies in each of 2 colors.
+CORNER THE MARKET,1,1,Control 4 planets that each have the same planet trait.
+DEVELOP WEAPONRY,1,1,Own 2 unit upgrade technologies.
+LEAD FROM THE FRONT,1,1,Spend a total of 3 tokens from yout tactic and/or strategy pools.
+MANIPULATE GALACTIC LAW,2,2,Spend 16 influance.
+GALVANIZE THE PEOPLE,2,2,Spend a total of 6 tokens from your tactic and/or strategy pools.
+REVOLUTIONIZE WARFARE,2,2,Own 3 unit upgrade technologies.
+UNIFY THE COLONIES,2,2,Control 6 planets that each have the same planet trait.
+CENTRALIZE GALACTIC TRADE,2,2,Spend 10 trade goods.
+FORM GALACTIC BRAIN TRUST,2,2,Control 5 planets that have technology specialties.
+CONQUER THE WEAK,2,2,Control 1 planet that is another player's home system.
+SUBDUE THE GALAXY,2,2,Control 11 planets in non-home systems.
+FOUND A GOLDEN AGE,2,2,Spend 16 resources.
+MASTER THE SCIENCES,2,2,Own 2 technologies in each of 4 colors.
+UNVEIL FLAGSHIP,0,1,-
+SPARK A REBELLION,0,1,-
+DESTROY THEIR GREATEST SHIP,0,1,-
+GATHER A MIGHTY FLEET,0,1,-
+MINE RARE METALS,0,1,-
+THREATEN ENEMIES,0,1,-
+FORGE AN ALLIANCE,0,1,-
+BECOME THE GATEKEEPER,0,1,-
+TURN THEIR FLEET TO DUST,0,1,-
+FORM A SPY NETWORK,0,1,-
+ESTABLISH A PERIMETER,0,1,-
+MONOPOLIZE PRODUCTION,0,1,-
+CONTROL THE REGION,0,1,-
+FUEL THE WAR MACHINE,0,1,-
+MASTER THE LAWS OF PHYSICS,0,1,-
+CUT SUPPLY LINES,0,1,-
+LEARN THE SECRET OF COSMOS,0,1,-
+ADAPT NEW STRATEGIES,0,1,-
+OCCUPY THE SEAT OF THE EMPIRE,0,1,-
+MAKE AN EXAMPLE OF THEIR WORLD,0,1,-
+

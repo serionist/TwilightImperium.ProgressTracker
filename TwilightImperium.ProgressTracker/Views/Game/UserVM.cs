@@ -23,13 +23,16 @@ namespace TwilightImperium.ProgressTracker.Views.Game
                     StringComparison.CurrentCultureIgnoreCase), new PlanetVMComparer());
             Planets.AllItems.CollectionChanged += (sender, args) =>
             {
-                PropChanged(nameof(PlanetsCount), nameof(ResourceString), nameof(InfluenceString));
+                PropChanged(nameof(PlanetsCount), nameof(ResourceString), nameof(InfluenceString), nameof(SelectedString));
             };
             Planets.PropertyChanged += (sender, args) =>
             {
-                PropChanged(nameof(ResourceString), nameof(InfluenceString));
+                PropChanged(nameof(ResourceString), nameof(InfluenceString),nameof(SelectedString));
             };
-
+            FinishedObjectives.CollectionChanged += (sender, args) =>
+            {
+                PropChanged(nameof(VPstring));
+            };
         }
 
         public string Name { get;  }
@@ -41,15 +44,17 @@ namespace TwilightImperium.ProgressTracker.Views.Game
 
         public int PlanetsCount => Planets.AllItems.Count;
 
-        public string ResourceString => $"{AllResource} ({RemainingResource}) [{SelectedResource}]";
+        public string ResourceString => $"{AllResource} ({RemainingResource})";
         public int AllResource => Planets.AllItems.Sum(e => e.Model.Resource);
         public int RemainingResource => Planets.AllItems.Where(e => !e.IsExhausted).Sum(e => e.Model.Resource);
-        public int SelectedResource => Planets.FilteredItems.Where(e => e.IsSelected).Sum(e => e.Model.Resource);
-        public string InfluenceString => $"{AllInfluence} ({RemainingInfluence}) [{SelectedInfluence}]";
+        public int SelectedResource => Planets.FilteredItems.Where(e => e.IsSelected && !e.IsExhausted).Sum(e => e.Model.Resource);
+        public string InfluenceString => $"{AllInfluence} ({RemainingInfluence})";
         public int AllInfluence => Planets.AllItems.Sum(e => e.Model.Influence);
         public int RemainingInfluence => Planets.AllItems.Where(e => !e.IsExhausted).Sum(e => e.Model.Influence);
-        public int SelectedInfluence => Planets.FilteredItems.Where(e => e.IsSelected).Sum(e => e.Model.Influence);
-
+        public int SelectedInfluence => Planets.AllItems.Where(e => e.IsSelected && !e.IsExhausted).Sum(e => e.Model.Influence);
+        public string SelectedString => $"Selected R: {SelectedResource} I: {SelectedInfluence}";
+        public int VP => FinishedObjectives.Sum(e => e.Model.VictoryPoints);
+        public string VPstring => $" VP: {VP}";
         public bool CanExhaustPlanet => Planets.AllItems.Any(e => e.IsSelected && !e.IsExhausted);
 
         public ICommand AssignPlanetCommand => new DelegateCommand(()=>Controller.I.AssignPlanets(this.Parent));

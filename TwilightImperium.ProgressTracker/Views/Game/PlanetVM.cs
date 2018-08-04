@@ -25,7 +25,7 @@ namespace TwilightImperium.ProgressTracker.Views.Game
             {
                 _isExhausted = value;
                 ThisPropChanged();
-                Parent.PropChanged(nameof(UserVM.InfluenceString), nameof(UserVM.ResourceString));
+                Parent.PropChanged(nameof(UserVM.InfluenceString), nameof(UserVM.ResourceString), nameof(UserVM.SelectedString));
             }
         }
 
@@ -36,7 +36,7 @@ namespace TwilightImperium.ProgressTracker.Views.Game
             {
                 _isSelected = value;
                 ThisPropChanged();
-                Parent?.PropChanged(nameof(UserVM.CanExhaustPlanet), nameof(UserVM.ResourceString),nameof(UserVM.InfluenceString));
+                Parent?.PropChanged(nameof(UserVM.CanExhaustPlanet), nameof(UserVM.ResourceString),nameof(UserVM.InfluenceString), nameof(UserVM.SelectedString));
             }
         }
     }

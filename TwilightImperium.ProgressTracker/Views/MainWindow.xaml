@@ -148,7 +148,10 @@
                             <DockPanel>
                                 <Grid Width="20" Height="Auto" VerticalAlignment="Stretch" Background="{Binding Color}"></Grid>
                                 <StackPanel Margin="5 0 0 0">
-                                    <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Text="{Binding Name}"></TextBlock>
+                                    <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}">
+                                        <Run Text="{Binding Name,Mode=OneWay}"></Run>
+                                        <Run Text="{Binding VPstring,Mode=OneWay}"></Run>
+                                    </TextBlock>
                                     <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}">
                                         <Run>Resource:</Run>
                                         <Run Text="{Binding ResourceString,Mode=OneWay}"></Run>
@@ -174,6 +177,9 @@
                         <Run  Text="{Binding ResourceString,Mode=OneWay}"/>
                         <Run FontWeight="Bold" Text="Influence:"/>
                         <Run Text="{Binding InfluenceString,Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource MaterialDesignBody2TextBlock}" Foreground="{StaticResource PrimaryHueMidBrush}" HorizontalAlignment="Center">
+                        <Run Text="{Binding SelectedString,Mode=OneWay}"/>
                     </TextBlock>
                     <DockPanel DockPanel.Dock="Top" Margin="10 10 10 0">
                         <Button Margin="5 0"  DockPanel.Dock="Right" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Width="30" Height="30" ToolTip="Assign planets" Command="{Binding AssignPlanetCommand}">

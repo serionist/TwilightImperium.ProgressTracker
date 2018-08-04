@@ -1,10 +1,59 @@
-﻿#The list of planets. Columns: Name, PlanetType, Technology, Influence, Resource, Description
-#The names of planets must be unique
-#PlanetType possibilities:  Cultural, Hazardous, Industrial
-#Technology possibilitiers:  Blue, Yellow, Red, Green
-#Example:
-#Lofasz,Cultural,Blue,15,110,Anyad
-Lofasz12,Cultural,Blue,15,110,Anyad
-Lofasz,Cultural,Blue,15,110,Anyad
-Lofasz4,Cultural,Blue,15,110,Anyad
-Lofasz5,Cultural,Blue,15,110,Anyad
+Abyz,Hazardous,None,0,3
+Arinam,Industrial,None,2,1
+Arnor,Industrial,None,1,2
+Bereg,Hazardous,None,1,3
+Centauri,Cultural,None ,3,1
+Coorneeq,Cultural,None,2,1
+Dal Bootha,Cultural,None,2,0
+Fria,Hazardous,None,0,2
+Gral,Industrial,Blue,1,1
+Lazar,Industrial,Yellow,0,1
+Lirta IV,Hazardous,None,3,2
+Lodor,Cultural,None,1,3
+Lor,Industrial,None,2,1
+Meer,Hazardous,Red,4,0
+Mehar Xull,Hazardous,Red,3,1
+Mellon,Cultural,None,2,0
+New Albion,Industrial,Green,1,1
+Quann,Cultural,None,1,2
+Qucen'n,Industrial,None,2,1
+Rarron,Cultural,None,3,0
+Resculon,Cultural,None,0,2
+Sakulag,Hazardous,None,1,2
+Saudor,Industrial,None,2,2
+Starpoint,Hazardous,None,1,3
+Tar'Mann,Industrial,Green,1,1
+Tequ'ran,Hazardous,None,0,2
+Thibah,Industrial,Blue,1,1
+Torkan,Cultural,None,3,0
+Vefut II,Hazardous,None,2,2
+Wellon,Industrial,Yellow,2,1
+XXehan,Cultural,None,1,1
+Zohbat,Hazardous,None,1,3
+NestPhar,Homeplanet,None,2,3
+Creuss,Homeplanet,None,2,4
+Hercant,Homeplanet,None,1,1
+Arretze,Homeplanet,None,0,2
+Kamdorn,Homeplanet,None,1,0
+Jol,Homeplanet,None,2,1
+Nar,Homeplanet,None,3,2
+[0.0.0],Homeplanet,None,0,5
+Arc Prime,Homeplanet,None,0,4
+Wren Terra,Homeplanet,None,1,2
+Moll Primus,Homeplanet,None,1,4
+Muuat,Homeplanet,None,1,4
+Druaa,Homeplanet,None,1,3
+Maaluuk,Homeplanet,None,2,0
+Mordai II,Homeplanet,None,0,4
+Lisis II,Homeplanet,None,0,1
+Ragh,Homeplanet,None,1,2
+Tren'Lak,Homeplanet,None,0,1
+Quinarra,Homeplanet,None,1,3
+Jord,Homeplanet,None,2,4
+Winnu,Homeplanet,None,4,3
+Archon Wren,Homeplanet,None,3,2
+Archon Tau,Homeplanet,None,1,1
+Darien,Homeplanet,None,4,4
+Retillion,Homeplanet,None,3,2
+Shalloq,Homeplanet,None,2,1
+Mecatol Rex,MecatolRex,None,6,1
